@@ -5,6 +5,7 @@ import time
 from pathlib import Path
 from google import genai
 from google.genai import types
+from rich import print as rprint
 
 from .prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 from scanner.schemas import ScanResult
@@ -40,21 +41,23 @@ def generate_report(scan_result: ScanResult) -> str | None:
                 if not report_text:
                     return None
                     
+                if attempt > 0:
+                    rprint("   • [green]Fallback succeeded[/green]")
                 return report_text
                 
             except Exception as e:
                 error_msg = str(e)
                 if '503' in error_msg or '429' in error_msg:
-                    print(f"    [dim]Attempt {attempt + 1}: Model {model} is busy. Trying next...[/dim]")
+                    pass  # Silent failover
                     continue
                 else:
-                    print(f"\n[!] Failed to generate Gemini report: {e}")
+                    rprint(f"   • [bold red]Failed generating AI output: {e}[/bold red]")
                     return None
                     
         # If loop finishes without returning, all models failed (503 or 429)
         if attempt < max_retries - 1:
-            print(f"    [yellow]All models hit maximum capacity. Waiting 5 seconds before retry {attempt + 2}/{max_retries}...[/yellow]")
+            pass  # Silent wait
             time.sleep(5)
             
-    print("\n[!] AI report could not be generated due to temporary API unavailability. Core scan results are complete.")
+    rprint("   • [dim yellow]AI report could not be generated (Temporary API limit).[/dim yellow]")
     return None

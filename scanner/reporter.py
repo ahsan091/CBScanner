@@ -80,7 +80,9 @@ def save_scan_result(result: ScanResult, output_dir: str = "outputs") -> tuple[s
     Outputs go to '{output_dir}/scans/' and '{output_dir}/reports/'.
     """
     # Safe naming for paths
-    target_safe = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', result.target)
+    # Get main domain name (e.g., 'cyberburgs' from 'cyberburgs.com') and capitalize it
+    main_name = result.target.split('.')[0].capitalize()
+    target_safe = re.sub(r'[^a-zA-Z0-9_\-]', '_', main_name)
     
     # Setup directories
     outputs_dir = Path(output_dir)
