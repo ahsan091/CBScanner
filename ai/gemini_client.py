@@ -5,12 +5,11 @@ import time
 from pathlib import Path
 from google import genai
 from google.genai import types
-from markdown_pdf import MarkdownPdf, Section
 
 from .prompts import SYSTEM_PROMPT, USER_PROMPT_TEMPLATE
 from scanner.schemas import ScanResult
 
-def generate_report(scan_result: ScanResult, output_dir: str = "outputs") -> str | None:
+def generate_report(scan_result: ScanResult) -> str | None:
     api_key = os.getenv("GEMINI_API_KEY")
     # If the user sets the key to empty string or doesn't have it, we skip gently
     if not api_key or api_key == "your_api_key_here":
@@ -41,16 +40,7 @@ def generate_report(scan_result: ScanResult, output_dir: str = "outputs") -> str
                 if not report_text:
                     return None
                     
-                target_safe = re.sub(r'[^a-zA-Z0-9_\-\.]', '_', scan_result.target)
-                reports_dir = Path(output_dir) / "reports"
-                reports_dir.mkdir(parents=True, exist_ok=True)
-                
-                pdf_path = reports_dir / f"{target_safe}.pdf"
-                pdf = MarkdownPdf(toc_level=2)
-                pdf.add_section(Section(report_text))
-                pdf.save(str(pdf_path))
-                    
-                return str(pdf_path)
+                return report_text
                 
             except Exception as e:
                 error_msg = str(e)
@@ -66,5 +56,5 @@ def generate_report(scan_result: ScanResult, output_dir: str = "outputs") -> str
             print(f"    [yellow]All models hit maximum capacity. Waiting 5 seconds before retry {attempt + 2}/{max_retries}...[/yellow]")
             time.sleep(5)
             
-    print("\n[!] Failed to generate Gemini report: Max retries exceeded due to 503 service unavailability.")
+    print("\n[!] AI report could not be generated due to temporary API unavailability. Core scan results are complete.")
     return None

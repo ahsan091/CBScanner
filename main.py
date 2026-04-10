@@ -103,9 +103,12 @@ def main():
     # 5. Optional Gemini Reporting
     if not args.no_ai:
         console.print("\n[yellow]Generating AI report via Gemini...[/yellow]")
-        ai_pdf_path = generate_report(result, output_dir=args.output_dir)
-        if ai_pdf_path:
-            console.print(f"[green]✔[/green] AI Report generated and saved to: [bold]{ai_pdf_path}[/bold]")
+        ai_markdown = generate_report(result)
+        if ai_markdown:
+            from scanner.reporter import build_premium_report, render_pdf
+            premium_layout = build_premium_report(result, ai_content=ai_markdown)
+            render_pdf(premium_layout, pdf_path)
+            console.print(f"[green]✔[/green] AI Report generated and saved to: [bold]{pdf_path}[/bold]")
         else:
             console.print("[dim]AI Report skipped or failed (check API limits, networking, or if GEMINI_API_KEY is properly set in .env).[/dim]")
 

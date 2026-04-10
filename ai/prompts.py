@@ -19,14 +19,16 @@ Rules:
 - If findings are limited, say so clearly.
 - If a protection is missing, explain why it matters in simple terms.
 - Prioritize issues by practical risk and security impact.
+- MUST mention both STRENGTHS (positive findings) and WEAKNESSES equally, as supported by the JSON.
+- MUST adhere tonally to the provided local 'score' and 'severity'. Forbid claims of exploitability unless strictly proven.
 
-The report should contain these sections:
-1. Executive Summary
-2. Overall Security Posture
-3. Key Observations
-4. Prioritized Recommendations
-5. Technical Notes
-6. Passive Assessment Disclaimer
+The report should contain strictly these markdown headers:
+## Executive Summary
+## Overall Security Posture
+## Detailed Findings
+## Top Priority Actions
+
+DO NOT generate a title, cover page, technical notes, or legal disclaimers. Focus entirely on the analytical narrative.
 
 Tone:
 - professional
@@ -64,12 +66,10 @@ You must use these data points when present:
 - recommendations
 
 Report format:
-# Executive Summary
-# Overall Security Posture
-# Detailed Findings
-# Top Priority Actions
-# Technical Notes
-# Passive Assessment Disclaimer
+## Executive Summary
+## Overall Security Posture
+## Detailed Findings
+## Top Priority Actions
 
 Writing rules:
 - Keep it accurate and professional.
@@ -78,15 +78,8 @@ Writing rules:
 - If the score is moderate or low, explain the main drivers.
 - If the score is high, still mention improvement opportunities.
 - Recommendations must be practical and realistic.
-- Use markdown formatting.
+- Use Markdown formatting with cleanly separated H2 (##) tags for the main sections, and H3 (###) tags for specific categories.
 
 JSON data:
 {scan_json}
-
----
-
-Important Final Disclaimer Requirement:
-You MUST include EXACTLY this disclaimer at the end of the report:
-
-This report is based on passive, non-intrusive checks of publicly observable website indicators. It does not confirm exploitability, internal security posture, or the presence of specific vulnerabilities beyond the observed evidence. It should be treated as a security hardening review and does not replace an authorized penetration test or deeper application security assessment.
 """
