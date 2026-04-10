@@ -1,0 +1,8 @@
+requests>=2.32.5
+dnspython==2.6.1
+python-dotenv==1.0.1
+rich==13.7.1
+pydantic==2.6.4
+google-genai==0.3.0
+pytest==8.1.1
+markdown-pdf==1.13.1
